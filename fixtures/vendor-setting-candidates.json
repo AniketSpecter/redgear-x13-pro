@@ -1,0 +1,131 @@
+{
+  "source": "Original vendor API calls intercepted before USB transmission; writes denied",
+  "cases": [
+    {
+      "source": "Original vendor HidD_SetFeature call intercepted before transmission",
+      "physicalWrite": false,
+      "apiResult": "forced failure by research write guard",
+      "ui": {
+        "dpi": 4000,
+        "pollingRateHz": 1000
+      },
+      "reportId": 3,
+      "includesReportId": true,
+      "hex": "0305033000ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "sourceSequence": 17,
+      "timestamp": "2026-10-15T19:24:40.992Z"
+    },
+    {
+      "source": "Original vendor HidD_SetFeature call intercepted before transmission",
+      "physicalWrite": false,
+      "apiResult": "forced failure by research write guard",
+      "ui": {
+        "dpi": 2400,
+        "pollingRateHz": 1000
+      },
+      "reportId": 3,
+      "includesReportId": true,
+      "hex": "0303033000ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "sourceSequence": 32,
+      "timestamp": "2026-10-15T19:25:37.267Z"
+    },
+    {
+      "source": "Original vendor HidD_SetFeature call intercepted before transmission",
+      "physicalWrite": false,
+      "apiResult": "forced failure by research write guard",
+      "ui": {
+        "dpi": 800,
+        "pollingRateHz": 1000
+      },
+      "reportId": 3,
+      "includesReportId": true,
+      "hex": "0301033000ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "sourceSequence": 47,
+      "timestamp": "2026-10-15T19:25:49.993Z"
+    },
+    {
+      "source": "Original vendor HidD_SetFeature call intercepted before transmission",
+      "physicalWrite": false,
+      "apiResult": "forced failure by research write guard",
+      "ui": {
+        "dpi": 4000,
+        "pollingRateHz": 1000
+      },
+      "reportId": 3,
+      "includesReportId": true,
+      "hex": "03050301000000000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "sourceSequence": 122,
+      "timestamp": "2026-10-15T19:29:35.639Z"
+    },
+    {
+      "source": "Original vendor HidD_SetFeature call intercepted before transmission",
+      "physicalWrite": false,
+      "apiResult": "forced failure by research write guard",
+      "ui": {
+        "dpi": 4000,
+        "pollingRateHz": 1000
+      },
+      "reportId": 3,
+      "includesReportId": true,
+      "hex": "030503000000ff000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "sourceSequence": 152,
+      "timestamp": "2026-10-15T19:30:36.299Z"
+    },
+    {
+      "source": "Original vendor HidD_SetFeature call intercepted before transmission",
+      "physicalWrite": false,
+      "apiResult": "forced failure by research write guard",
+      "ui": {
+        "dpi": 4000,
+        "pollingRateHz": 1000
+      },
+      "reportId": 3,
+      "includesReportId": true,
+      "hex": "0305030000ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "sourceSequence": 137,
+      "timestamp": "2026-10-15T19:30:09.364Z"
+    },
+    {
+      "source": "Original vendor HidD_SetFeature call intercepted before transmission",
+      "physicalWrite": false,
+      "apiResult": "forced failure by research write guard",
+      "ui": {
+        "dpi": 4000,
+        "pollingRateHz": 125
+      },
+      "reportId": 3,
+      "includesReportId": true,
+      "hex": "0305003000ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "sourceSequence": 77,
+      "timestamp": "2026-10-15T19:28:42.968Z"
+    },
+    {
+      "source": "Original vendor HidD_SetFeature call intercepted before transmission",
+      "physicalWrite": false,
+      "apiResult": "forced failure by research write guard",
+      "ui": {
+        "dpi": 4000,
+        "pollingRateHz": 250
+      },
+      "reportId": 3,
+      "includesReportId": true,
+      "hex": "0305013000ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "sourceSequence": 92,
+      "timestamp": "2026-10-15T19:28:54.262Z"
+    },
+    {
+      "source": "Original vendor HidD_SetFeature call intercepted before transmission",
+      "physicalWrite": false,
+      "apiResult": "forced failure by research write guard",
+      "ui": {
+        "dpi": 4000,
+        "pollingRateHz": 500
+      },
+      "reportId": 3,
+      "includesReportId": true,
+      "hex": "0305023000ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "sourceSequence": 62,
+      "timestamp": "2026-10-15T19:28:31.027Z"
+    }
+  ]
+}

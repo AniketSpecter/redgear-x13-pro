@@ -1,0 +1,50 @@
+{
+  "observedOrder": [
+    "red",
+    "blue or bluish-purple",
+    "green"
+  ],
+  "confirmedByOwner": true,
+  "nativeByteOrder": "R,B,G",
+  "trials": [
+    {
+      "Feature": "lighting-native-byte-5",
+      "OriginalHex": "03050300043235ff0102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "TargetHex": "0305030004ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "ReadBackHex": "0305030004ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "RestoredHex": "03050300043235ff0102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "Executed": true,
+      "SetAccepted": true,
+      "ReadBackMatched": true,
+      "RestoreAccepted": true,
+      "RestoreMatched": true,
+      "Failure": null
+    },
+    {
+      "Feature": "lighting-native-byte-6",
+      "OriginalHex": "03050300043235ff0102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "TargetHex": "030503000400ff000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "ReadBackHex": "030503000400ff000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "RestoredHex": "03050300043235ff0102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "Executed": true,
+      "SetAccepted": true,
+      "ReadBackMatched": true,
+      "RestoreAccepted": true,
+      "RestoreMatched": true,
+      "Failure": null
+    },
+    {
+      "Feature": "lighting-native-byte-7",
+      "OriginalHex": "03050300043235ff0102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "TargetHex": "03050300040000ff0102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "ReadBackHex": "03050300040000ff0102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "RestoredHex": "03050300043235ff0102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "Executed": true,
+      "SetAccepted": true,
+      "ReadBackMatched": true,
+      "RestoreAccepted": true,
+      "RestoreMatched": true,
+      "Failure": null
+    }
+  ]
+}

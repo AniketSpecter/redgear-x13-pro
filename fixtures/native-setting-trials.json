@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-16",
+  "transport": "native Windows HidD_GetFeature/HidD_SetFeature",
+  "trials": [
+    {
+      "Feature": "dpi",
+      "OriginalHex": "0305033100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "TargetHex": "0303033100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "ReadBackHex": "0303033100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "RestoredHex": "0305033100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "Executed": true,
+      "SetAccepted": true,
+      "ReadBackMatched": true,
+      "RestoreAccepted": true,
+      "RestoreMatched": true,
+      "Failure": null
+    },
+    {
+      "Feature": "polling",
+      "OriginalHex": "0305033100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "TargetHex": "0305023100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "ReadBackHex": "0305023100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "RestoredHex": "0305033100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "Executed": true,
+      "SetAccepted": true,
+      "ReadBackMatched": true,
+      "RestoreAccepted": true,
+      "RestoreMatched": true,
+      "Failure": null
+    }
+  ]
+}

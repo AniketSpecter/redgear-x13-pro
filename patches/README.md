@@ -23,10 +23,12 @@ git apply --check "$patchDir/openmouse.patch"
 git apply "$patchDir/openmouse.patch"
 npm ci
 npm install --no-save --package-lock=false ../mouse-protocol
+# Copy the specifically requested avatar from this utility repository:
+Copy-Item "$patchDir/../assets/redgear-x13-pro.png" public/devices/redgear-x13-pro.png
 npm run check
 npm run preview -- --host 127.0.0.1 --port 5173 --strictPort
 ```
 
-This serves a local app only. Select the mouse in its picker. Direct WebHID may fall back to identity on Windows/Edge; obtain OpenMouse Bridge separately if native transport is needed. Review Bridge's startup settings and profiles before running it. Do not rely on a browser protected-collection bypass.
+This serves a local app only. DPI and polling changes/restoration were tested through Bridge in this app. Direct WebHID falls back to identity on the tested Windows/Edge setup; obtain OpenMouse Bridge separately for native transport. Review Bridge's startup settings and profiles before running it. Do not rely on a browser protected-collection bypass. The source patch omits the PNG itself; the copy step above supplies it with its separate artwork provenance.
 
 For newer upstream commits, inspect current contracts and rebase the focused changes; do not replace current registry/controller files with stale copies. The hosted supported-devices catalog is generated from another repository and is not changed by this patch.

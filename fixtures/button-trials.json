@@ -1,0 +1,41 @@
+{
+  "trials": [
+    {
+      "Executed": true,
+      "Accepted": true,
+      "Matched": true,
+      "RestoreAccepted": true,
+      "RestoreMatched": true,
+      "OriginalSha256": "c1a4d84b034f9c83175c1ceeef4effad108d22dadf4e385a1bff5a8f93a0169e",
+      "TargetSha256": "c690d624b873f11a764325f4f988205855d37f7cfedbd8300aa5b99889fdebdd",
+      "ReadBackSha256": "c690d624b873f11a764325f4f988205855d37f7cfedbd8300aa5b99889fdebdd",
+      "RestoredSha256": "c1a4d84b034f9c83175c1ceeef4effad108d22dadf4e385a1bff5a8f93a0169e",
+      "OriginalRecord": "2510000000000000ffff",
+      "TargetRecord": "2508000000000000ffff",
+      "Failure": null
+    }
+  ],
+  "uiReadBacks": [
+    {
+      "timestamp": "2026-10-16T03:58:22.8025835+05:30",
+      "reportId": 4,
+      "fullReportSha256": "c690d624b873f11a764325f4f988205855d37f7cfedbd8300aa5b99889fdebdd",
+      "forwardRecord": "2508000000000000ffff",
+      "physicalWrite": false
+    },
+    {
+      "timestamp": "2026-10-16T03:58:49.9089215+05:30",
+      "reportId": 4,
+      "fullReportSha256": "c1a4d84b034f9c83175c1ceeef4effad108d22dadf4e385a1bff5a8f93a0169e",
+      "forwardRecord": "2510000000000000ffff",
+      "physicalWrite": false
+    },
+    {
+      "timestamp": "2026-10-16T04:00:23.0326519+05:30",
+      "reportId": 4,
+      "fullReportSha256": "c1a4d84b034f9c83175c1ceeef4effad108d22dadf4e385a1bff5a8f93a0169e",
+      "forwardRecord": "2510000000000000ffff",
+      "physicalWrite": false
+    }
+  ]
+}

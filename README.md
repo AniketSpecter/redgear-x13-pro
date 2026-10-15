@@ -1,31 +1,41 @@
-# Redgear X13 Pro — open-source read-only utility
+# Redgear X13 Pro utility and OpenMouse driver
 
-Native Windows diagnostics, a TypeScript framing codec, an experimental OpenMouse client, and reviewable OpenMouse integration patches for the **Redgear X-Series X13 Pro**.
+Open-source native Windows DPI/polling/RGB utility, TypeScript codec/client and local
+OpenMouse integration for the **Redgear X-Series X13 Pro**.
 
-**Status: research / read-only.** This project identifies the mouse and reads an opaque status report. It does **not** change DPI, polling, RGB, profiles or buttons. It is not a replacement for the vendor configurator yet.
+**Working core settings:** DPI, polling, corrected static RGB and standard buttons
+are hardware-tested, including the actual OpenMouse UI through native Bridge.
+Macros, additional lighting effects and vendor profile interoperability remain incomplete.
+This is an independent community project, not an official Redgear release or a
+change to OpenMouse's hosted site.
 
-## Hardware evidence
+![Redgear X13 Pro](assets/redgear-x13-pro.png)
 
-Tested on one owner-confirmed wired X13 Pro on Windows 11:
+## Tested support
 
-| Item | Observed result |
+| Setting | Support |
 |---|---|
-| USB identity | `1B80:B412`, `MECHREV Gaming Mouse`, manufacturer `Jtech` |
-| Status collection | Interface 01, collection 03, usage `FF00:0001` |
-| Status report | Feature report 3; 40-byte native buffer including ID / 39-byte API payload |
-| Native Windows read | Three identical successful reads without preliminary writes |
-| Edge direct WebHID | Device opens; feature read fails; driver safely falls back to identity |
-| OpenMouse Bridge beta.15 | Three successful matching native reads; local OpenMouse shows BRIDGE and read-only support |
-| Firmware version | Unknown; USB revision `0x0713` is not treated as firmware |
-| Settings | Opaque and disabled; no write support claimed |
+| DPI selection | 400, 800, 1200, 2400, 3200, 4000, 4800; fixed stages |
+| Polling | 125, 250, 500, 1000 Hz |
+| Physical acceptance | 4000->2400->4000 DPI and 1000->500->1000 Hz; exact full-report read-back |
+| OpenMouse / Bridge | Both changes and restoration passed in the real local UI |
+| Direct WebHID in tested Edge/Windows | Read fails; safe identity fallback |
+| Static RGB | Corrected R,B,G hardware order; green/blue swap fixed |
+| Standard buttons | Six buttons; left/right/middle/back/forward/DPI-cycle actions |
+| Physical reconnect | Final restored settings retained |
+| Macros / extra effects / hardware profiles | Not implemented |
+| Windows pointer/precision/scroll/double-click | Native companion panel; affects this Windows user |
 
-The driver keeps `verified: false`. Recognition and raw reads do not establish full settings support. See [testing](docs/testing.md) and [protocol evidence](docs/protocol.md).
+Hardware: owner-confirmed wired X13 Pro, USB `1B80:B412`, `MECHREV Gaming Mouse`,
+manufacturer `Jtech`. Only interface 01 / collection 03, feature report 3, is used.
+Firmware version is unknown. See [protocol](docs/protocol.md) and [testing](docs/testing.md).
+`verified:false` remains conservative; per-feature acceptance flags and limits are documented.
 
-Validation: the standalone package passes its TypeScript build and six targeted tests; its compiled CLI was also exercised against the physical mouse. The full OpenMouse integration passed 2,489 protocol tests and 383 app tests. CI covers Linux/Windows mocked tests and Windows helper compilation without USB access.
+## Windows utility
 
-## Use the Windows utility
-
-Prerequisites: Node.js 20+ and npm, Windows PowerShell, and the connected mouse. No vendor software, capture driver, Bridge or administrator rights are needed for the direct native status command on the tested machine.
+Node.js 20+, npm, Windows PowerShell and the connected mouse are required.
+Close the original vendor configurator before writes. No capture driver, Bridge
+or administrator rights are needed for the standalone native commands on the tested machine.
 
 ```powershell
 git clone https://github.com/AniketSpecter/redgear-x13-pro.git
@@ -33,46 +43,53 @@ cd redgear-x13-pro
 npm ci
 npm run check
 npm run status
-npm run enumerate
-```
-
-Or use the PowerShell helpers without Node:
-
-```powershell
-.\scripts\read-feature3.ps1 -Label baseline
-.\scripts\enumerate-hid.ps1 -Label baseline
-```
-
-The status helper targets only `1B80:B412`, interface 01 / collection 03, report 3, exactly 40 bytes. It refuses ambiguous/missing devices and never calls a report-write API. Local outputs go to ignored `evidence/` directories; enumeration may include other attached devices. Review outputs before sharing them.
-
-Build and decode a recorded report offline:
-
-```powershell
-npm run build
 node dist/cli.js help
-node dist/cli.js decode 0305033100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000
+node dist/cli.js dpi 2400
+node dist/cli.js dpi 4000
+node dist/cli.js polling 500
+node dist/cli.js polling 1000
+node dist/cli.js color "#00ff00"
+node dist/cli.js windows-settings
 ```
 
-`decode` validates framing and preserves the payload; it does not infer settings. Both native framing and WebHID/Bridge payload framing have explicit strict decoders.
+Each settings command reads the live 40-byte report, changes only the proven
+fields and verifies the entire reply. Changes may persist on the mouse. Unsupported
+values are refused. No firmware, calibration or report 5/6 writes exist. Report 4 is used only by the
+OpenMouse button client, preserving private macro/unknown data.
+The `status` and `enumerate` commands are read-only; local evidence stays ignored.
+Offline `decode HEX` validates framing and reports the mapped DPI/rate fields.
 
-## OpenMouse integration
+## OpenMouse
 
-The [patches](patches/README.md) target recorded upstream commits. They register the narrow status collection, hide unsupported settings, and make the limited-support notice visible. The app consumes a local protocol build. Follow the pinned setup instructions before applying the patches; they are not changes to the hosted OpenMouse service.
+Apply the [pinned source patches](patches/README.md), build the local protocol and
+app, and use official OpenMouse Bridge separately on the tested Windows setup.
+Seven fixed DPI stage selectors, four polling rates, corrected static colour and
+standard button remapping are available. Unknown features remain unavailable. Device artwork uses the specific mouse render the
+owner requested; see [artwork provenance](assets/README.md).
 
-The reusable client in `src/driver.ts` follows the same read-only logic. It accepts a WebHID-compatible device, validates its identity/report shape, reads only report 3, coalesces reads, and handles timeout/disconnect/failure without issuing writes. Current direct WebHID reads fail on the tested Windows/Edge setup; OpenMouse Bridge works through native HID. Bridge is optional for the standalone PowerShell utility and must be obtained separately from its official project.
+The client validates identity/report shape, serializes transfers, reads fresh
+before writes, checks full read-back, and stops further writes after transport
+failure/mismatch until reconnect. No blind retries or vendor-default replay.
 
-## Repository contents
+## Development and licensing
 
-- `src/`: codec, client and small CLI.
-- `scripts/`: original read-only Windows HID helpers and offline research tools.
-- `test/` and `fixtures/`: mocked transport tests and sanitized physical samples.
-- `patches/`: source-only OpenMouse integration patches.
-- `docs/`: observed facts, static-analysis references, unknowns and testing limits.
+`npm run check` builds TypeScript, runs twenty-one focused tests and inspects the
+package. CI runs Linux/Windows mocked tests plus Windows native-helper compilation.
+Hardware acceptance is documented separately; CI does not access a real mouse.
 
-## Contribute
+Code: **AGPL-3.0-or-later**, with OpenMouse attribution in [NOTICE](NOTICE).
+The specific vendor avatar retains its original ownership and is not relicensed
+as AGPL. No vendor executable, DLL, other skins, firmware, raw USB trace, serial,
+credential or Bridge binary is distributed. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Start with [CONTRIBUTING.md](CONTRIBUTING.md). Settings support needs controlled one-setting captures, independent fixtures, and owner approval before the first write. Do not guess IDs, packet fields or checksums. Firmware, bootloader, DFU and calibration writes are outside this project's scope.
+## Windows controls pictured in the vendor app
 
-**Not included:** proprietary Redgear/RW01 executables or DLLs, original UI/assets, firmware, raw captures, serial numbers, credentials, or Bridge binaries. The original vendor package is not being relicensed. This repository contains our implementation and sanitized research only.
+Run `node dist/cli.js windows-settings` (or `scripts/windows-settings-ui.ps1`) to
+open the native companion. Opening only reads settings; **Apply** writes changed
+values and verifies them. Pointer speed, precision, scroll/page amount and double
+click affect this Windows user and other attached mice. The panel is compiled from
+the included C# source with the Windows .NET Framework compiler; no download,
+installation, administrator rights or autostart registration is required.
 
-Licensed **AGPL-3.0-or-later**; see [LICENSE](LICENSE) and [NOTICE](NOTICE) for OpenMouse attribution. Independent community project, not an official Redgear product.
+The APIs are documented by Microsoft: [SystemParametersInfoW](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfow)
+and [SetDoubleClickTime](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setdoubleclicktime).

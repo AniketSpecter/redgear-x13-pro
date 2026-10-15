@@ -1,0 +1,97 @@
+{
+  "date": "2026-10-16",
+  "samples": {
+    "before-rgb-ui": [
+      {
+        "sample": 1,
+        "timestamp": "2026-10-16T03:44:14.7680128+05:30",
+        "reportId": 3,
+        "windowsBufferBytes": 40,
+        "hexIncludingReportId": "030503000400ffea0102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000"
+      },
+      {
+        "sample": 2,
+        "timestamp": "2026-10-16T03:44:14.8875600+05:30",
+        "reportId": 3,
+        "windowsBufferBytes": 40,
+        "hexIncludingReportId": "030503000400ffea0102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000"
+      },
+      {
+        "sample": 3,
+        "timestamp": "2026-10-16T03:44:14.9960669+05:30",
+        "reportId": 3,
+        "windowsBufferBytes": 40,
+        "hexIncludingReportId": "030503000400ffea0102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000"
+      }
+    ],
+    "rgb-ui-green": [
+      {
+        "sample": 1,
+        "timestamp": "2026-10-16T03:49:28.0556240+05:30",
+        "reportId": 3,
+        "windowsBufferBytes": 40,
+        "hexIncludingReportId": "03050300040000ff0102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000"
+      },
+      {
+        "sample": 2,
+        "timestamp": "2026-10-16T03:49:28.1672285+05:30",
+        "reportId": 3,
+        "windowsBufferBytes": 40,
+        "hexIncludingReportId": "03050300040000ff0102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000"
+      },
+      {
+        "sample": 3,
+        "timestamp": "2026-10-16T03:49:28.2772503+05:30",
+        "reportId": 3,
+        "windowsBufferBytes": 40,
+        "hexIncludingReportId": "03050300040000ff0102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000"
+      }
+    ],
+    "after-rgb-ui": [
+      {
+        "sample": 1,
+        "timestamp": "2026-10-16T03:51:25.8529484+05:30",
+        "reportId": 3,
+        "windowsBufferBytes": 40,
+        "hexIncludingReportId": "030503000400ffea0102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000"
+      },
+      {
+        "sample": 2,
+        "timestamp": "2026-10-16T03:51:25.9688802+05:30",
+        "reportId": 3,
+        "windowsBufferBytes": 40,
+        "hexIncludingReportId": "030503000400ffea0102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000"
+      },
+      {
+        "sample": 3,
+        "timestamp": "2026-10-16T03:51:26.0764327+05:30",
+        "reportId": 3,
+        "windowsBufferBytes": 40,
+        "hexIncludingReportId": "030503000400ffea0102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000"
+      }
+    ],
+    "cold-reconnect": [
+      {
+        "sample": 1,
+        "timestamp": "2026-10-16T04:00:16.9299952+05:30",
+        "reportId": 3,
+        "windowsBufferBytes": 40,
+        "hexIncludingReportId": "030503000400ffea0102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000"
+      },
+      {
+        "sample": 2,
+        "timestamp": "2026-10-16T04:00:17.0517222+05:30",
+        "reportId": 3,
+        "windowsBufferBytes": 40,
+        "hexIncludingReportId": "030503000400ffea0102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000"
+      },
+      {
+        "sample": 3,
+        "timestamp": "2026-10-16T04:00:17.1768032+05:30",
+        "reportId": 3,
+        "windowsBufferBytes": 40,
+        "hexIncludingReportId": "030503000400ffea0102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000"
+      }
+    ]
+  }
+}

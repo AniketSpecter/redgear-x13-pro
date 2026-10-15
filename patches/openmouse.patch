@@ -1,3 +1,19 @@
+diff --git a/public/devices/README.md b/public/devices/README.md
+index d8e0889..381c1c6 100644
+--- a/public/devices/README.md
++++ b/public/devices/README.md
+@@ -1,5 +1,11 @@
+ # Device artwork
+ 
++`redgear-x13-pro.png` is the unmodified transparent render from the owner's
++original Redgear package (`skins/DefaultPic/Mouse2.png`), included at the
++owner's explicit request for the X13 Pro avatar. Vendor artwork/trademarks
++retain their original ownership; the AGPL code license does not relicense it.
++This community branch uses a local override pending upstream artwork review.
++
+ Top-down product images shown in the persistent device panel. These are
+ **not committed to the repo** — they're hosted in the `openmouse-devices`
+ Cloudflare R2 bucket (public read via its r2.dev URL, upload access
 diff --git a/src/device/controller.ts b/src/device/controller.ts
 index ae4c2f5..5aef38a 100644
 --- a/src/device/controller.ts
@@ -27,3 +43,23 @@ index ae4c2f5..5aef38a 100644
  
    if (!customDpiEditing) customDpiText = `${status.dpi.toLocaleString()} DPI`;
  
+diff --git a/src/ui/device-images.ts b/src/ui/device-images.ts
+index c92b2e8..931f983 100644
+--- a/src/ui/device-images.ts
++++ b/src/ui/device-images.ts
+@@ -36,6 +36,7 @@ function resolveDeviceImageFilename(_device: HIDDevice | null | undefined, displ
+ }
+ 
+ function computeDeviceImageFilename(displayName: string): string {
++  if (/^Redgear X13 Pro$/i.test(displayName)) return "redgear-x13-pro.png";
+   // Lightspeed receivers are shared product IDs, so paired G502 X variants
+   // must use the friendly name read from the mouse itself.
+   if (/g502\s*x\s*plus/i.test(displayName)) return "logitech-g502-x-plus.png";
+@@ -223,6 +224,7 @@ const DEVICE_IMAGE_BASE_URL = "https://img.openmouse.app/";
+  * README note.
+  */
+ const LOCAL_OVERRIDES: Readonly<Record<string, string>> = {
++  "redgear-x13-pro.png": "/devices/redgear-x13-pro.png",
+   "attackshark-r2.png": "/devices/attackshark-r2.png",
+   "delux-m800-mini.png": "/devices/delux-m800-mini.png",
+   "ipi-float-88.png": "/devices/ipi-float-88.png",

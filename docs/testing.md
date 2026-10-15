@@ -1,24 +1,44 @@
-# Testing checkpoint — 2026-10-16
+# X13 Pro hardware acceptance
 
-Owner-confirmed wired X13 Pro on Windows 11, VID:PID `1B80:B412`, product `MECHREV Gaming Mouse`, manufacturer `Jtech`.
+Tested one owner-confirmed wired Redgear X13 Pro, USB 1B80:B412, Windows 11,
+MECHREV Gaming Mouse / Jtech, on 2026-10-16. Firmware version is unknown.
 
-## Physical observations
+| Feature | Observed acceptance |
+|---|---|
+| Identity / status | Exact interface 01 collection 03, feature 3, 40 native / 39 API bytes |
+| DPI | Native and actual OpenMouse/Bridge 4000 -> 2400 -> 4000, full read-back |
+| Polling | Native and actual OpenMouse/Bridge 1000 -> 500 -> 1000, full read-back |
+| Static colour | Three native channel tests, owner observed red / blue-purple / green; exact read-back and restoration |
+| Corrected RGB | Driver uses R,B,G; OpenMouse #00ff00 matched the observed green channel, then restored prior #00eaff |
+| Buttons | Native and actual OpenMouse/Bridge Forward -> Back -> Forward; full report-4 hashes match targets/restoration |
+| Primary click | Codec refuses to remove the only standard Left click assignment |
+| Unknown / macro data | Entire report is preserved; unknown/macro records cannot be remapped |
+| Physical reconnect | Owner unplugged five seconds and reconnected; report 3 matched pre-unplug, full report-4 hash unchanged |
+| Avatar | Specific owner-requested transparent product rendering appears in the local app |
+| Windows host controls | Native companion shows pointer/precision/scroll/page/double-click; documented APIs reapply existing values with identical read-back |
+| Direct Edge WebHID | Opens but feature read fails; identity-only fallback disables settings |
+| Transport | Official portable Bridge beta.15; isolated config, no saved profiles, updates/autostart off |
 
-1. Native descriptor-only enumeration identified the status collection as MI_01/COL03, usage FF00:0001, feature report 3 with a 40-byte Windows buffer.
-2. The original vendor executable was inspected statically, without execution. It calls HidD_GetFeature for report 3 with length 40. Reference offsets and hash are in [static findings](static-findings.md).
-3. Our native helper read that report three times. All 40-byte buffers matched [the sanitized native fixture](../fixtures/feature3-baseline.json).
-4. A patched local OpenMouse app in Edge identified/opened the device. Direct WebHID GET_FEATURE(3) failed at the browser API, before decoding. The app visibly fell back to identity only.
-5. With owner approval, official portable OpenMouse Bridge v1.0.0-beta.15 was run using an isolated config, no saved profiles, updates off, and startup registration disabled. The download matched its published SHA-256. No Bridge binary is distributed here.
-6. The local app displayed a BRIDGE badge and its successful read-only research notice. Three additional GET_FEATURE(3) reads through Bridge returned 39-byte payloads matching the native fixture after the native report-ID prefix was removed. See [Bridge fixture](../fixtures/bridge-feature3.json).
+Twenty-one focused codec/client tests cover independent captures, framing/ranges,
+queues, preservation, primary-click protection, unknown/macro protection, failures,
+timeouts, mismatch lockout and disconnects. Full protocol check: 2504 passed.
+App check: 383 passed. Source builds and native helper compilation pass.
+CI uses mocked devices only; it does not claim physical USB access.
 
-No vendor executable or setting-write operation was needed. No firmware command or capture driver was installed. The cause of Edge's direct read failure is unproven; a browser/Windows collection-routing or buffer issue is a hypothesis.
+The reconnect test validates retention of the final restored settings. It does not
+prove that every available value/action/effect has been exercised or that each
+intermediate trial survives power loss. Only the observed cases above are claimed.
 
-## Automated checks
+Vendor evidence came from approved original binaries under a write-denying API
+guard. Simulated report-3 success let the vendor construct report 4 without any
+USB writes. API arguments are not USB wire captures. Signed USBPcap 1.5.4.0 was
+installed with approval, but the filter requires re-enumeration/restart and no wire
+capture was obtained. No reboot or all-USB reset was performed. A guarded injected
+UI copy crashed; later captures instrumented only the native HID helper. All vendor
+research processes were stopped before physical trials. Only sanitized standard
+records and full-report hashes are shared; user macros/raw report-4 data stay local.
 
-The OpenMouse integration baseline passed 2,483 protocol tests and 383 app tests. With this driver, full checks passed 2,489 protocol tests and 383 app tests. Six targeted driver/codec tests cover physical framing, strict identity/collection matching, nonzero DataView offsets, no report writes, read failures/malformed frames, cache ownership, concurrent reads, timeout and disconnect invalidation.
-
-The standalone package runs those six targeted tests and a TypeScript build/package inspection. CI uses mocked transport, not physical USB hardware.
-
-## Still unverified
-
-Payload field meanings, DPI/rate/RGB/profile/button settings, persistence, restoration, firmware identity, raw wire report descriptor, physical unplug/replug/cold start, other units/PIDs/OSes, and every write feature. `verified` remains false.
+Limitations: macros/M-Macro, six vendor host-profile tiles, additional animated
+effects/brightness/speed and DPI indicator colour editing are not implemented.
+Firmware/bootloader/DFU/calibration remain excluded. The overall verified flag
+stays false; individual acceptance flags document working features precisely.

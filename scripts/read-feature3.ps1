@@ -11,7 +11,7 @@ $devices = @([X13HidInventory]::Enumerate() | Where-Object { $_.VendorId -eq 0x1
 if ($devices.Count -ne 1) { throw "Expected one matching status collection, got $($devices.Count). No feature request sent." }
 $samples = @(foreach ($i in 1..3) {
     $bytes = [X13ReadFeature3]::Read($devices[0].Path)
-    [ordered]@{ sample = $i; timestamp = [DateTimeOffset]::Now.ToString('o'); reportId = 3; windowsBufferBytes = 40; hexIncludingReportId = (($bytes | ForEach-Object { $_.ToString('x2') }) -join '') }
+    [ordered]@{ sample = $i; timestamp = [DateTimeOffset]::Now.ToString('o'); reportId = 3; windowsBufferBytes = 40; hexIncludingReportId = (($bytes | ForEach-Object { $_.ToString('x2') }) -join ''); dpi = $(if($bytes[1] -lt 7){@(400,800,1200,2400,3200,4000,4800)[$bytes[1]]}else{$null}); pollingRateHz = $(if($bytes[2] -lt 4){@(125,250,500,1000)[$bytes[2]]}else{$null}); staticColor = $(if(($bytes[3] -band 0xf1) -eq 0){'#{0:x2}{1:x2}{2:x2}' -f $bytes[5],$bytes[7],$bytes[6]}else{$null}) }
     Start-Sleep -Milliseconds 100
 })
 $samples | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $raw "feature3-$Label.json") -Encoding UTF8

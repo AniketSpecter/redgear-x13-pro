@@ -1,9 +1,14 @@
-# Hypotheses and unknowns
+# Remaining unknowns
 
-Observed: exact USB identity; vendor-defined feature IDs/lengths; static API wrappers; three identical successful GET_FEATURE(3) replies. User identifies the physical product as X13 Pro.
+Working, accepted surfaces: DPI selection, polling, corrected static RGB and standard
+button records. Overall verified:false remains conservative. Only one exact wired
+owner-confirmed X13 Pro was tested; do not extrapolate to another VID/PID or model.
 
-Inferred: the RW01 program family uses separate feature collections for status/configuration/macro data. Their precise roles are not established except for the 40-byte read path. MECHREV/Jtech naming suggests OEM reuse but is not evidence of compatibility with any existing OpenMouse codec. Source searches found no current Redgear/RW01/1B80/B412 match.
+Unimplemented: macro/M-Macro encoding, hardware profile banks, additional effects,
+brightness/speed and DPI indicator colour editing. Retention after one physical
+reconnect is proven for final restored settings, not every selectable value.
+Firmware identity and report-5/6 roles remain unknown. No firmware/DFU/bootloader
+or calibration writes exist. OEM names do not prove compatibility.
 
-Unverified: meaning of every payload field, DPI values/stage, polling rate, lighting, profiles, report-4 contents, checksums, ACK behavior, reconnect persistence, firmware identity, browser collection access, Bridge requirement. Byte changes must be tied to controlled known settings before assigning semantics.
-
-Do not use skin labels as packet constants or infer firmware from USB revision 0x0713. Do not request report 4 merely to explore it; it may contain user macro data.
+Raw report 4 may contain private macros. Do not publish it, native device paths,
+serials or full vendor traces. Unknown/macro records are protected by the codec.

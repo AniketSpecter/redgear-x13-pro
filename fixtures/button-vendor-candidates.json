@@ -1,0 +1,134 @@
+{
+  "source": "Blocked original vendor API calls; report-3 ACK simulated without USB transmission",
+  "cases": [
+    {
+      "sequence": 57,
+      "physicalWrite": false,
+      "length": 2049,
+      "pointerBytes": "0430003a0044004e00580062006c00",
+      "slots": [
+        {
+          "slot": 0,
+          "offset": 49,
+          "hex": "2101000000000000ffff"
+        },
+        {
+          "slot": 1,
+          "offset": 59,
+          "hex": "2202000000000000ffff"
+        },
+        {
+          "slot": 2,
+          "offset": 69,
+          "hex": "2304000000000000ffff"
+        },
+        {
+          "slot": 3,
+          "offset": 79,
+          "hex": "44000000000000000000"
+        },
+        {
+          "slot": 4,
+          "offset": 89,
+          "hex": "2510000000000000ffff"
+        },
+        {
+          "slot": 5,
+          "offset": 99,
+          "hex": "2608000000000000ffff"
+        },
+        {
+          "slot": 6,
+          "offset": 109,
+          "hex": "2702000000000000ffff"
+        }
+      ]
+    },
+    {
+      "sequence": 80,
+      "physicalWrite": false,
+      "length": 2049,
+      "pointerBytes": "0430003a0044004e00580062006c00",
+      "slots": [
+        {
+          "slot": 0,
+          "offset": 49,
+          "hex": "2101000000000000ffff"
+        },
+        {
+          "slot": 1,
+          "offset": 59,
+          "hex": "2202000000000000ffff"
+        },
+        {
+          "slot": 2,
+          "offset": 69,
+          "hex": "2304000000000000ffff"
+        },
+        {
+          "slot": 3,
+          "offset": 79,
+          "hex": "44000000000000000000"
+        },
+        {
+          "slot": 4,
+          "offset": 89,
+          "hex": "2508000000000000ffff"
+        },
+        {
+          "slot": 5,
+          "offset": 99,
+          "hex": "2608000000000000ffff"
+        },
+        {
+          "slot": 6,
+          "offset": 109,
+          "hex": "2702000000000000ffff"
+        }
+      ]
+    },
+    {
+      "sequence": 103,
+      "physicalWrite": false,
+      "length": 2049,
+      "pointerBytes": "0430003a0044004e00580062006c00",
+      "slots": [
+        {
+          "slot": 0,
+          "offset": 49,
+          "hex": "2101000000000000ffff"
+        },
+        {
+          "slot": 1,
+          "offset": 59,
+          "hex": "2202000000000000ffff"
+        },
+        {
+          "slot": 2,
+          "offset": 69,
+          "hex": "2304000000000000ffff"
+        },
+        {
+          "slot": 3,
+          "offset": 79,
+          "hex": "44000000000000000000"
+        },
+        {
+          "slot": 4,
+          "offset": 89,
+          "hex": "2502000000000000ffff"
+        },
+        {
+          "slot": 5,
+          "offset": 99,
+          "hex": "2608000000000000ffff"
+        },
+        {
+          "slot": 6,
+          "offset": 109,
+          "hex": "2702000000000000ffff"
+        }
+      ]
+    }
+  ]
+}

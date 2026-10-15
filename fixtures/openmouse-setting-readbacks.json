@@ -1,0 +1,56 @@
+{
+  "source": "Independent native reads after actual local OpenMouse UI / Bridge changes",
+  "cases": [
+    {
+      "case": "openmouse-dpi-2400",
+      "samples": [
+        {
+          "timestamp": "2026-10-16T01:10:00.0406341+05:30",
+          "hexIncludingReportId": "0303033100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000"
+        },
+        {
+          "timestamp": "2026-10-16T01:10:00.1531349+05:30",
+          "hexIncludingReportId": "0303033100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000"
+        },
+        {
+          "timestamp": "2026-10-16T01:10:00.2647920+05:30",
+          "hexIncludingReportId": "0303033100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000"
+        }
+      ]
+    },
+    {
+      "case": "openmouse-polling-500",
+      "samples": [
+        {
+          "timestamp": "2026-10-16T01:11:03.2674085+05:30",
+          "hexIncludingReportId": "0305023100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000"
+        },
+        {
+          "timestamp": "2026-10-16T01:11:03.3891335+05:30",
+          "hexIncludingReportId": "0305023100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000"
+        },
+        {
+          "timestamp": "2026-10-16T01:11:03.5031557+05:30",
+          "hexIncludingReportId": "0305023100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000"
+        }
+      ]
+    },
+    {
+      "case": "openmouse-restored",
+      "samples": [
+        {
+          "timestamp": "2026-10-16T01:12:21.8178004+05:30",
+          "hexIncludingReportId": "0305033100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000"
+        },
+        {
+          "timestamp": "2026-10-16T01:12:21.9362359+05:30",
+          "hexIncludingReportId": "0305033100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000"
+        },
+        {
+          "timestamp": "2026-10-16T01:12:22.0465468+05:30",
+          "hexIncludingReportId": "0305033100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000"
+        }
+      ]
+    }
+  ]
+}

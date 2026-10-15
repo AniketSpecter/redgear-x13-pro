@@ -1,8 +1,8 @@
 {
   "name": "@aniketspecter/redgear-x13-pro",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "Read-only Redgear X13 Pro diagnostics and experimental OpenMouse integration",
+  "description": "Redgear X13 Pro utility and OpenMouse driver with tested DPI, polling, corrected RGB and standard buttons",
   "type": "module",
   "license": "AGPL-3.0-or-later",
   "engines": {
@@ -27,8 +27,12 @@
   },
   "files": [
     "dist",
+    "src",
+    "docs",
+    "patches",
     "scripts",
     "fixtures",
+    "assets",
     "README.md",
     "LICENSE",
     "NOTICE"
