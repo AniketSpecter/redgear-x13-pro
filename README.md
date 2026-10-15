@@ -27,7 +27,8 @@ change to OpenMouse's hosted site.
 | Windows pointer/precision/scroll/double-click | Native companion panel; affects this Windows user |
 
 Hardware: owner-confirmed wired X13 Pro, USB `1B80:B412`, `MECHREV Gaming Mouse`,
-manufacturer `Jtech`. Only interface 01 / collection 03, feature report 3, is used.
+manufacturer `Jtech`. Interface 01 / collection 03 supplies feature report 3 for settings;
+collection 04 supplies feature report 4 for standard button mappings.
 Firmware version is unknown. See [protocol](docs/protocol.md) and [testing](docs/testing.md).
 `verified:false` remains conservative; per-feature acceptance flags and limits are documented.
 
@@ -60,6 +61,12 @@ The `status` and `enumerate` commands are read-only; local evidence stays ignore
 Offline `decode HEX` validates framing and reports the mapped DPI/rate fields.
 
 ## OpenMouse
+
+Upstream contributions: [protocol #233](https://github.com/OpenMouse-Project/mouse-protocol/pull/233)
+is ready for maintainer review; [app #1108](https://github.com/OpenMouse-Project/openmouse/pull/1108)
+is draft until the driver is published in a stable protocol release. The official
+site is not updated. The local patch workflow below installs the protocol
+candidate explicitly; it is not a fix for the app's committed npm dependency.
 
 Apply the [pinned source patches](patches/README.md), build the local protocol and
 app, and use official OpenMouse Bridge separately on the tested Windows setup.

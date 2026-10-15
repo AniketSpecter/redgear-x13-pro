@@ -32,3 +32,11 @@ npm run preview -- --host 127.0.0.1 --port 5173 --strictPort
 This serves a local app only. DPI and polling changes/restoration were tested through Bridge in this app. Direct WebHID falls back to identity on the tested Windows/Edge setup; obtain OpenMouse Bridge separately for native transport. Review Bridge's startup settings and profiles before running it. Do not rely on a browser protected-collection bypass. The source patch omits the PNG itself; the copy step above supplies it with its separate artwork provenance.
 
 For newer upstream commits, inspect current contracts and rebase the focused changes; do not replace current registry/controller files with stale copies. The hosted supported-devices catalog is generated from another repository and is not changed by this patch.
+
+The app patch includes the PR #1108 duplicate-status-note correction and measured
+Redgear bundle-size allowance. Its stable npm dependency still lacks the driver:
+this local development workflow intentionally installs the sibling candidate.
+Official deployment must wait for protocol #233 to be merged and published, then
+update the app manifest/lockfile to the exact stable version and repeat fresh
+install checks. See the release checklist included by the app patch. A Git pin
+or a local link must not be presented as passing the app's stable-dependency CI.
