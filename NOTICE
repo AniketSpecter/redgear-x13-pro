@@ -1,0 +1,16 @@
+Redgear X13 Pro research utility
+Copyright (C) 2026 AniketSpecter and contributors
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+OpenMouse integration targets the OpenMouse-Project repositories:
+https://github.com/OpenMouse-Project/mouse-protocol
+https://github.com/OpenMouse-Project/openmouse
+
+The WebHID type declarations and integration context in patches are from those
+AGPL-3.0-or-later projects. Their original authors retain their copyrights.
+Baseline commits: mouse-protocol e53af6d57197074bb8afd31f0fc1522ece68c890;
+openmouse 99f6ea450d73ab41ad2e5b61b7a05f9f9509df7f.
+
+No proprietary Redgear/RW01 software, UI assets, firmware, raw captures, device
+serials, or OpenMouse Bridge binaries are included or relicensed here.
+Redgear/OpenMouse names identify compatibility; this is an independent project.

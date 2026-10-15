@@ -1,0 +1,48 @@
+{
+  "name": "@aniketspecter/redgear-x13-pro",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Read-only Redgear X13 Pro diagnostics and experimental OpenMouse integration",
+  "type": "module",
+  "license": "AGPL-3.0-or-later",
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AniketSpecter/redgear-x13-pro.git"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./protocol": {
+      "types": "./dist/protocol.d.ts",
+      "import": "./dist/protocol.js"
+    }
+  },
+  "bin": {
+    "redgear-x13-pro": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "scripts",
+    "fixtures",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "tsx --test \"test/**/*.test.ts\"",
+    "check": "npm run build && npm test && npm pack --dry-run",
+    "status": "tsx src/cli.ts status",
+    "enumerate": "tsx src/cli.ts enumerate"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "tsx": "4.23.11",
+    "@types/node": "^22"
+  }
+}

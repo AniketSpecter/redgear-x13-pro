@@ -1,0 +1,12 @@
+{
+  "source": "Native HidD_GetFeature on owner-confirmed X13 Pro, 2026-10-16",
+  "vid": "1B80",
+  "pid": "B412",
+  "reportId": 3,
+  "includesReportId": true,
+  "bytes": 40,
+  "identicalSamples": 3,
+  "hex": "0305033100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+  "sha256": "b8141d45a6823d836b7b9e41a6dbbcf6e96fb3d8932aabc9d3d0f701d62d9595",
+  "semantics": "opaque configuration; no fields interpreted; not USBPcap traffic"
+}

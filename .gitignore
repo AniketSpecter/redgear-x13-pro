@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.tools/
+evidence/
+vendor-software/
+*.exe
+*.dll
+*.sys
+*.bin
+*.pcap
+*.pcapng
+*.log
+*.tgz
+__pycache__/
+.env
+.env.*

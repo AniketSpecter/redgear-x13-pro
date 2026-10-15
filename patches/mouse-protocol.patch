@@ -1,0 +1,404 @@
+diff --git a/docs/redgear-x13-pro-testing.md b/docs/redgear-x13-pro-testing.md
+new file mode 100644
+index 0000000..b2b8787
+--- /dev/null
++++ b/docs/redgear-x13-pro-testing.md
+@@ -0,0 +1,23 @@
++# Redgear X13 Pro: limited read-only research driver
++
++Device: owner-confirmed wired Redgear X13 Pro, VID:PID **1B80:B412**; USB product **MECHREV Gaming Mouse**, manufacturer **Jtech**. Native attribute revision **0x0713** is not a decoded firmware version. This identifier must not be extrapolated to all Redgear mice.
++
++On 2026-10-16, Windows HID descriptors reported interface 01 vendor collections FF00:0001 carrying feature reports 3/4/5/6, with full Windows buffer lengths 40/2049/6/8 bytes respectively. The driver accepts only a collection offering feature report 3 with 39 payload bytes. Keyboard/consumer/pointer and the other vendor collections are not status interfaces for this driver.
++
++The supplied hid.exe (SHA-256 ef665c1dd608656729c78d1cc003ad44ef50c15c7370e2a499f1b40fb87d808a) statically calls HidD_GetFeature for report 3, length 40, at VA 0x4058a4. Its wrapper at 0x402280 calls the HID API via the thunk at 0x51eb8e. No vendor executable was run. A separate native helper using only the documented GET_FEATURE operation read the exact connected mouse three times, approximately 100 ms apart, without any preliminary writes. All replies were identical:
++
++```text
++0305033100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000
++```
++
++The fixture includes the report ID at byte 0. The 39-byte payload remains opaque: no DPI, polling, RGB, profile, firmware or checksum interpretation is claimed. These are direct native read samples of one state, not USBPcap captures or independent setting-change cases. Full raw evidence stays outside the upstream checkout, ignored locally; no proprietary binaries or user identifiers are redistributed.
++
++The codec checks only framing and returns a copy. Native framing includes the report ID (40 bytes); the separate WebHID/Bridge payload decoder requires 39 bytes without the ID. The driver opens the status device and calls receiveFeatureReport(3), retains a defensive copy of the reconstructed full report for local research, coalesces concurrent reads, enforces a two-second read timeout, and falls back to identity if reads fail. It suppresses further reads after failure until reconnect. It has **no setters, sendReport or sendFeatureReport path**. Settings remain disabled, required numeric telemetry uses hidden zero sentinels, active profile is unknown, and firmware is empty. `verified` remains false.
++
++Automated tests cover the physical fixture, wrong lengths/IDs, narrow identity/collection matching, nonzero DataView offsets, no writes, malformed/failed reads, timeout, and disconnect invalidation. The registry probe includes the measured collection shape. The local OpenMouse controller imports the client and includes it in NEEDS_OPEN.
++
++Owner confirmed successful connection through the browser picker in Edge; the visible title and heading were independently observed as "Redgear X13 Pro" with Connected/Wired status. Direct WebHID GET report 3 fails after 37 ms with "Failed to receive the feature report," and the app correctly falls back to identity only. This is an API failure before decoding, not evidence of malformed device bytes.
++
++With owner approval, official portable OpenMouse Bridge v1.0.0-beta.15 was run temporarily with isolated config, updates off and startup registration disabled. The archive matched its official SHA-256. Through Bridge the local app displayed the BRIDGE badge and successful read-only research notice. Three independent Bridge reads returned identical 39-byte payloads matching the native fixture after removal of its report-ID prefix. Bridge needs no system capture driver for this path. No vendor executable or HID write was performed. Cold physical reconnect, payload semantics and setting changes remain untested. `verified` remains false.
++
++Next: capture vendor startup and controlled before/after settings, establish payload semantics, add independent fixtures, then implement one proven setting at a time. Installing USBPcap, running original EXEs and the first write for each feature require owner approval. Firmware/bootloader/calibration writes are out of scope.
+diff --git a/package.json b/package.json
+index df2a803..c783140 100644
+--- a/package.json
++++ b/package.json
+@@ -18,6 +18,10 @@
+     "CONTRIBUTING.md"
+   ],
+   "exports": {
++    "./redgear": {
++      "types": "./dist/redgear/index.d.ts",
++      "import": "./dist/redgear/index.js"
++    },
+     ".": {
+       "types": "./dist/index.d.ts",
+       "import": "./dist/index.js"
+diff --git a/src/drivers/mouse-types.ts b/src/drivers/mouse-types.ts
+index ffcc6d0..49a34a0 100644
+--- a/src/drivers/mouse-types.ts
++++ b/src/drivers/mouse-types.ts
+@@ -204,7 +204,7 @@ export interface MagneticCalibrationProgress {
+ }
+ 
+ export interface MouseStatus {
+-  brand: "RAWM" | "Motospeed" | "Logitech" | "Pulsar" | "Endgame Gear" | "WLMouse" | "G-Wolves" | "Lamzu" | "CRDRAKO" | "Attack Shark" | "LunaFury" | "Vancer" | "Orbital" | "Razer" | "Teevolution" | "ATK" | "VXE" | "VGN" | "VAXEE" | "Finalmouse" | "Keychron" | "moddoMOUSE" | "Ninjutso" | "Zaunkoenig" | "Fantech" | "Wooting" | "WALLHACK" | "SteelSeries" | "Glorious" | "MCHOSE" | "K-snake" | "Noir Gear" | "Lingbao" | "GearHub" | "AJAZZ" | "Corsair" | "Microsoft" | "Dareu" | "Redragon" | "Incott" | "HyperX" | "ASUS" | "Ryunix" | "Delux" | "GravaStar" | "IPI" | "Rapoo" | "Fater" | "Cooler Master" | "AJAZZ";
++  brand: "Redgear" | "RAWM" | "Motospeed" | "Logitech" | "Pulsar" | "Endgame Gear" | "WLMouse" | "G-Wolves" | "Lamzu" | "CRDRAKO" | "Attack Shark" | "LunaFury" | "Vancer" | "Orbital" | "Razer" | "Teevolution" | "ATK" | "VXE" | "VGN" | "VAXEE" | "Finalmouse" | "Keychron" | "moddoMOUSE" | "Ninjutso" | "Zaunkoenig" | "Fantech" | "Wooting" | "WALLHACK" | "SteelSeries" | "Glorious" | "MCHOSE" | "K-snake" | "Noir Gear" | "Lingbao" | "GearHub" | "AJAZZ" | "Corsair" | "Microsoft" | "Dareu" | "Redragon" | "Incott" | "HyperX" | "ASUS" | "Ryunix" | "Delux" | "GravaStar" | "IPI" | "Rapoo" | "Fater" | "Cooler Master" | "AJAZZ";
+   name: string;
+   /** Optional LunaFury controls, populated only after successful device reads. */
+   lunafury?: import("../lamzu/lunafury.js").LunaFurySettings;
+diff --git a/src/drivers/redgear/hid.test.ts b/src/drivers/redgear/hid.test.ts
+new file mode 100644
+index 0000000..941bb58
+--- /dev/null
++++ b/src/drivers/redgear/hid.test.ts
+@@ -0,0 +1,103 @@
++import assert from "node:assert/strict";
++import test from "node:test";
++import { redgearDecodeRawStatus, redgearDecodeStatusPayload } from "../../redgear/index.js";
++import { RedgearX13HidClient } from "./hid.js";
++import { X13_NATIVE_STATUS_HEX } from "./status-fixture.js";
++
++const fixture = Uint8Array.from(Buffer.from(X13_NATIVE_STATUS_HEX, "hex"));
++function mock() {
++  const calls: string[] = [];
++  const state = {
++    vendorId: 0x1b80, productId: 0xb412, productName: "MECHREV Gaming Mouse", opened: false,
++    collections: [{ usagePage: 0xff00, usage: 1, children: [], inputReports: [], outputReports: [],
++      featureReports: [{ reportId: 3, items: [{ reportSize: 8, reportCount: 39 }] }] }],
++    async open() { state.opened = true; calls.push("open"); },
++    async close() { state.opened = false; calls.push("close"); },
++    async receiveFeatureReport(id: number) {
++      calls.push(`read:${id}`);
++      // Exercise nonzero DataView offsets too.
++      const bytes = new Uint8Array(44); bytes.set(fixture.subarray(1), 2);
++      return new DataView(bytes.buffer, 2, 39);
++    },
++    async sendFeatureReport() { assert.fail("Driver must never write a feature report"); },
++    async sendReport() { assert.fail("Driver must never write an output report"); },
++  };
++  return { state, device: state as unknown as HIDDevice, calls };
++}
++
++test("raw framing validates independent native fixture without interpreting settings", () => {
++  const bytes = fixture.slice();
++  const parsed = redgearDecodeRawStatus(bytes);
++  assert.equal(parsed.payload.length, 39);
++  assert.deepEqual(parsed.payload, fixture.slice(1));
++  parsed.payload[0] = 0;
++  assert.equal(bytes[1], 5);
++  for (const length of [0, 1, 39, 41]) assert.throws(() => redgearDecodeRawStatus(new Uint8Array(length)));
++  const wrong = fixture.slice(); wrong[0] = 4;
++  assert.throws(() => redgearDecodeRawStatus(wrong), /report ID/);
++  assert.deepEqual(redgearDecodeStatusPayload(fixture.subarray(1)).payload, fixture.subarray(1));
++  for (const length of [0, 38, 40]) assert.throws(() => redgearDecodeStatusPayload(new Uint8Array(length)));
++  // Payload byte 0 may itself equal 3; it must never be mistaken for an ID.
++  const payload = fixture.slice(1); payload[0] = 3;
++  assert.equal(redgearDecodeStatusPayload(payload).payload[0], 3);
++});
++
++test("identity matcher accepts only the status collection on the exact VID/PID", () => {
++  const { device, state } = mock();
++  assert.equal(RedgearX13HidClient.isSupported(device), true);
++  state.productId = 0xb413; assert.equal(RedgearX13HidClient.isSupported(device), false);
++  state.productId = 0xb412; state.vendorId = 0x1b81; assert.equal(RedgearX13HidClient.isSupported(device), false);
++  state.vendorId = 0x1b80; state.collections[0]!.featureReports[0]!.reportId = 4;
++  assert.equal(RedgearX13HidClient.isSupported(device), false);
++  state.collections[0]!.featureReports[0]!.reportId = 3;
++  state.collections[0]!.featureReports[0]!.items[0]!.reportCount = 2048;
++  assert.equal(RedgearX13HidClient.isSupported(device), false);
++});
++
++test("client performs only GET_FEATURE(3), coalesces reads, and hides unknown settings", async () => {
++  const { device, calls } = mock(); const client = new RedgearX13HidClient(device);
++  const pending = client.readStatus(); assert.equal(client.readStatus(), pending);
++  const status = await pending;
++  assert.deepEqual(calls, ["open", "read:3"]);
++  assert.equal(status.brand, "Redgear"); assert.equal(status.ui?.settingsReady, false);
++  assert.equal(status.ui?.valuesVerified, false); assert.deepEqual(status.firmware, []);
++  assert.deepEqual(client.getDpiOptions(), []);
++  assert.deepEqual(client.getRawStatusReport(), fixture);
++  const copy = client.getRawStatusReport()!; copy[0] = 0;
++  assert.equal(client.getRawStatusReport()![0], 3);
++  await client.close(); assert.equal(client.getRawStatusReport(), null);
++});
++
++test("failed or malformed reads degrade to identity and do not retry until reconnect", async () => {
++  const { device, state, calls } = mock();
++  state.receiveFeatureReport = async () => { calls.push("read:3"); throw new Error("unavailable"); };
++  const client = new RedgearX13HidClient(device);
++  assert.match((await client.readStatus()).ui!.statusNote!, /Identity only/);
++  await client.readStatus(); assert.deepEqual(calls, ["open", "read:3"]);
++  await client.close();
++  state.receiveFeatureReport = async () => { calls.push("malformed"); return new DataView(new ArrayBuffer(2)); };
++  assert.match((await client.readStatus()).ui!.statusNote!, /Identity only/);
++  assert.equal(client.getRawStatusReport(), null);
++});
++
++test("disconnect prevents an outstanding reply from repopulating cached status", async () => {
++  const { device, state } = mock();
++  let resolve!: (value: DataView) => void;
++  state.receiveFeatureReport = () => new Promise<DataView>((r) => { resolve = r; });
++  const client = new RedgearX13HidClient(device);
++  const pending = client.readStatus();
++  await new Promise((r) => setImmediate(r));
++  await client.close(); resolve(new DataView(fixture.slice(1).buffer));
++  await assert.rejects(pending, /disconnected/);
++  assert.equal(client.getRawStatusReport(), null);
++});
++
++test("timeout falls back to identity without issuing overlapping retries", async () => {
++  const { device, state, calls } = mock();
++  state.receiveFeatureReport = () => { calls.push("pending-read"); return new Promise<DataView>(() => {}); };
++  const client = new RedgearX13HidClient(device);
++  assert.match((await client.readStatus()).ui!.statusNote!, /Identity only/);
++  await client.readStatus();
++  assert.deepEqual(calls, ["open", "pending-read"]);
++  await client.close();
++});
+diff --git a/src/drivers/redgear/hid.ts b/src/drivers/redgear/hid.ts
+new file mode 100644
+index 0000000..da6a1c5
+--- /dev/null
++++ b/src/drivers/redgear/hid.ts
+@@ -0,0 +1,97 @@
++import type { MouseStatus } from "../mouse-types.js";
++import {
++  REDGEAR_X13_VENDOR_ID, REDGEAR_X13_PRODUCT_ID, REDGEAR_X13_USAGE_PAGE,
++  REDGEAR_X13_USAGE, REDGEAR_X13_STATUS_REPORT_ID, REDGEAR_X13_STATUS_BYTES,
++  REDGEAR_X13_SUPPORT, redgearDecodeStatusPayload,
++} from "../../redgear/index.js";
++
++function hasStatusCollection(collections: readonly HIDCollectionInfo[]): boolean {
++  return collections.some((collection) => (
++    collection.usagePage === REDGEAR_X13_USAGE_PAGE
++    && collection.usage === REDGEAR_X13_USAGE
++    && collection.featureReports.some((report) => report.reportId === REDGEAR_X13_STATUS_REPORT_ID
++      && report.items.reduce((bits, item) => bits + item.reportSize * item.reportCount, 0)
++        === (REDGEAR_X13_STATUS_BYTES - 1) * 8)
++  ) || hasStatusCollection(collection.children));
++}
++
++/** Identity + opaque status only. This class cannot send output/feature writes. */
++export class RedgearX13HidClient {
++  readonly device: HIDDevice;
++  private pending: Promise<MouseStatus> | null = null;
++  private generation = 0;
++  private readFailed = false;
++  private rawStatus: Uint8Array | null = null;
++
++  constructor(device: HIDDevice) { this.device = device; }
++
++  static isSupported(device: HIDDevice): boolean {
++    return device.vendorId === REDGEAR_X13_VENDOR_ID
++      && device.productId === REDGEAR_X13_PRODUCT_ID
++      && hasStatusCollection(device.collections);
++  }
++
++  getDpiOptions(): number[] { return []; }
++
++  async open(): Promise<void> {
++    if (!RedgearX13HidClient.isSupported(this.device)) throw new Error("Unsupported X13 Pro HID interface");
++    if (!this.device.opened) await this.device.open();
++  }
++
++  async close(): Promise<void> {
++    this.generation++;
++    this.rawStatus = null;
++    this.readFailed = false;
++    if (this.device.opened) await this.device.close();
++  }
++
++  /** For local protocol research; no setting semantics or identifiers are inferred. */
++  getRawStatusReport(): Uint8Array | null { return this.rawStatus?.slice() ?? null; }
++
++  readStatus(): Promise<MouseStatus> {
++    if (this.pending) return this.pending;
++    const task = this.readStatusNow();
++    this.pending = task;
++    void task.finally(() => { if (this.pending === task) this.pending = null; }).catch(() => undefined);
++    return task;
++  }
++
++  private async readStatusNow(): Promise<MouseStatus> {
++    const generation = this.generation;
++    await this.open();
++    if (generation !== this.generation) throw new Error("X13 Pro disconnected while opening");
++    let note = "Read-only research support. DPI, polling, profiles and lighting are not decoded.";
++    if (!this.readFailed) {
++      let timer: ReturnType<typeof setTimeout> | undefined;
++      try {
++        const view = await Promise.race([
++          this.device.receiveFeatureReport(REDGEAR_X13_STATUS_REPORT_ID),
++          new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error("Status read timed out")), 2000); }),
++        ]);
++        if (generation !== this.generation) throw new Error("X13 Pro disconnected during status read");
++        const bytes = new Uint8Array(view.buffer, view.byteOffset, view.byteLength);
++        const { payload } = redgearDecodeStatusPayload(bytes);
++        this.rawStatus = new Uint8Array(REDGEAR_X13_STATUS_BYTES);
++        this.rawStatus[0] = REDGEAR_X13_STATUS_REPORT_ID;
++        this.rawStatus.set(payload, 1);
++      } catch (error) {
++        if (generation !== this.generation) throw error;
++        // A timed-out transfer cannot be cancelled by WebHID. Do not issue
++        // another transfer on this connection; closing/reopening resets it.
++        this.readFailed = true;
++        this.rawStatus = null;
++      } finally { if (timer !== undefined) clearTimeout(timer); }
++    }
++    if (generation !== this.generation) throw new Error("X13 Pro disconnected during status read");
++    if (this.readFailed) note = "Identity only; status read unavailable. Reconnect to retry. Settings are disabled.";
++    return {
++      brand: "Redgear", name: REDGEAR_X13_SUPPORT.name,
++      ui: { family: "redgear-x13", settingsReady: false, valuesVerified: false,
++        defaultDisplayName: REDGEAR_X13_SUPPORT.name, statusNote: note },
++      batteryPercent: null, batteryState: "Unknown",
++      // Required shared fields use hidden sentinels, never claimed measurements.
++      dpi: 0, pollingRateHz: 0, activeProfile: null, liftOffDistance: null,
++      connectionType: "Wired", connectionDetail: "USB", firmware: [],
++    };
++  }
++}
+diff --git a/src/drivers/redgear/status-fixture.ts b/src/drivers/redgear/status-fixture.ts
+new file mode 100644
+index 0000000..8c4df20
+--- /dev/null
++++ b/src/drivers/redgear/status-fixture.ts
+@@ -0,0 +1,4 @@
++// Three identical native GET_FEATURE(3) samples, 2026-10-16, actual X13 Pro.
++// Windows buffer includes report ID; bytes contain only opaque configuration.
++// Source and hashes: docs/redgear-x13-pro-testing.md. No serial/path data.
++export const X13_NATIVE_STATUS_HEX = "0305033100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000";
+diff --git a/src/drivers/registry.test.ts b/src/drivers/registry.test.ts
+index 645f588..40eba8b 100644
+--- a/src/drivers/registry.test.ts
++++ b/src/drivers/registry.test.ts
+@@ -59,6 +59,8 @@ function collection(
+  */
+ function collectionShapes(): HIDCollectionInfo[][] {
+   const shapes: HIDCollectionInfo[][] = [[]];
++  // Native descriptor of the X13 Pro: report 3, 39 payload bytes + report ID.
++  shapes.push([{ ...collection(0xff00, 1), featureReports: [report(3, 39)] } as HIDCollectionInfo]);
+   // Dareu's receiver exposes a service collection beside its report-8 command
+   // channel; retain both so strict multi-collection drivers are exercisable.
+   shapes.push([
+diff --git a/src/drivers/registry.ts b/src/drivers/registry.ts
+index 3adb5af..2e7ec0e 100644
+--- a/src/drivers/registry.ts
++++ b/src/drivers/registry.ts
+@@ -1,3 +1,4 @@
++import { RedgearX13HidClient } from "./redgear/hid.js";
+ import { AsusHidClient } from "./asus/hid.ts";
+ import { AtkBitmouseHidClient } from "./atk/bitmouse-hid.ts";
+ import { AtkHidClient } from "./atk/hid.ts";
+@@ -83,7 +84,7 @@ import { AjazzHidClient } from "./ajazz/hid.ts";
+ import { AjazzAk820HidClient } from "./ajazz/ak820-hid.ts";
+ 
+ export type PulsarClient = PulsarHidClient | PulsarProHidClient | PulsarXs1HidClient;
+-export type SupportedClient = RawmHidClient | MotospeedHidClient | LogitechHidppClient | PulsarClient | EggOp1HidClient | EggOtHidClient | EggWeHidClient | FinalmouseHidClient | WLMouseHidClient | WLMouseBeastX4kHidClient | LamzuHidClient | LamzuAtlantisHidClient | OrbitalHidClient | RazerHidClient | RazerViperHidClient | RazerViperMiniHidClient | RazerViperV4ProHidClient | RazerCobraHidClient | TeevolutionHidClient | AtkHidClient | AtkBitmouseHidClient | VgnF2HidClient | VaxeeHidClient | Keychron8kHidClient | Keychron1kHidClient | Keychron4kHidClient | Keychron8kNordicHidClient | KeychronNapeHidClient | ModdoHidClient | NinjutsoHidClient | ZaunkoenigHidClient | CorsairHidClient | CorsairBragiHidClient | AttackSharkHidClient | FantechHidClient | GearHubHidClient | WootingHidClient | WallhackMouseHidClient | WallhackKeyboardHidClient | GWolvesHidClient | GWolvesXviHidClient | GWolvesXviNewHidClient | SteelSeriesRival3HidClient | SteelSeriesAerox3HidClient | SteelSeriesAerox3WirelessHidClient | SteelSeriesRival3WirelessHidClient | SteelSeriesAerox5HidClient | SteelSeriesAerox5WirelessHidClient | SteelSeriesRival650HidClient | SteelSeriesAerox9WirelessHidClient | SteelSeriesRival310HidClient | SteelSeriesPrimePlusHidClient | SteelSeriesPrimeMiniWirelessHidClient | SteelSeriesSenseiTenHidClient | GloriousHidClient | GloriousClassicHidClient | GloriousCore2HidClient | MchoseHidClient | MchoseDockHidClient | MchoseA5ProMaxHidClient | KsnakeHidClient | MicrosoftHidClient | DareuHidClient | RedragonHidClient | RedragonM690ProHidClient | IncottHidClient | HyperXHidClient | MchoseV3HidClient | AsusHidClient | KyuProMx1Client | DeluxHidClient | BytechHidClient | RapooHidClient | FaterHidClient | CoolerMasterHidClient | AjazzHidClient | AjazzAk820HidClient;
++export type SupportedClient = RawmHidClient | MotospeedHidClient | LogitechHidppClient | PulsarClient | EggOp1HidClient | EggOtHidClient | EggWeHidClient | FinalmouseHidClient | WLMouseHidClient | WLMouseBeastX4kHidClient | LamzuHidClient | LamzuAtlantisHidClient | OrbitalHidClient | RazerHidClient | RazerViperHidClient | RazerViperMiniHidClient | RazerViperV4ProHidClient | RazerCobraHidClient | TeevolutionHidClient | AtkHidClient | AtkBitmouseHidClient | VgnF2HidClient | VaxeeHidClient | Keychron8kHidClient | Keychron1kHidClient | Keychron4kHidClient | Keychron8kNordicHidClient | KeychronNapeHidClient | ModdoHidClient | NinjutsoHidClient | ZaunkoenigHidClient | CorsairHidClient | CorsairBragiHidClient | AttackSharkHidClient | FantechHidClient | GearHubHidClient | WootingHidClient | WallhackMouseHidClient | WallhackKeyboardHidClient | GWolvesHidClient | GWolvesXviHidClient | GWolvesXviNewHidClient | SteelSeriesRival3HidClient | SteelSeriesAerox3HidClient | SteelSeriesAerox3WirelessHidClient | SteelSeriesRival3WirelessHidClient | SteelSeriesAerox5HidClient | SteelSeriesAerox5WirelessHidClient | SteelSeriesRival650HidClient | SteelSeriesAerox9WirelessHidClient | SteelSeriesRival310HidClient | SteelSeriesPrimePlusHidClient | SteelSeriesPrimeMiniWirelessHidClient | SteelSeriesSenseiTenHidClient | GloriousHidClient | GloriousClassicHidClient | GloriousCore2HidClient | MchoseHidClient | MchoseDockHidClient | MchoseA5ProMaxHidClient | KsnakeHidClient | MicrosoftHidClient | DareuHidClient | RedragonHidClient | RedragonM690ProHidClient | IncottHidClient | HyperXHidClient | MchoseV3HidClient | AsusHidClient | KyuProMx1Client | DeluxHidClient | BytechHidClient | RapooHidClient | FaterHidClient | CoolerMasterHidClient | AjazzHidClient | AjazzAk820HidClient | RedgearX13HidClient;
+ 
+ export interface DeviceDriver {
+   brand: string;
+@@ -93,6 +94,7 @@ export interface DeviceDriver {
+ }
+ 
+ export const DEVICE_DRIVERS: readonly DeviceDriver[] = [
++  { brand: "Redgear", supports: (device) => RedgearX13HidClient.isSupported(device), create: (device) => new RedgearX13HidClient(device), score: () => 7 },
+   { brand: "IPI", supports: (device) => BytechHidClient.isSupported(device), create: (device) => new BytechHidClient(device), score: () => 9 },
+   {brand: "ASUS",supports: (device) => AsusHidClient.isSupported(device), create: (device) => new AsusHidClient(device), score: () => 10,},
+   { brand: "Dareu", supports: (device) => DareuHidClient.isSupported(device), create: (device) => new DareuHidClient(device), score: () => 9 },
+diff --git a/src/drivers/vendors.ts b/src/drivers/vendors.ts
+index 3387e20..5bb6464 100644
+--- a/src/drivers/vendors.ts
++++ b/src/drivers/vendors.ts
+@@ -147,6 +147,7 @@ import {
+ import { AJAZZ_AK820_WIRED_PID } from "../ajazz/ak820.ts";
+ 
+ export const VENDOR_ID = {
++  redgear: 0x1b80,
+   coolermaster: COOLERMASTER_VENDOR_ID,
+   ajazz: 0x1a2c,
+   vaxee: VAXEE_VENDOR_ID,
+@@ -869,6 +870,7 @@ export const VAXEE_HID_FILTERS: HIDDeviceFilter[] = VAXEE_PRODUCT_IDS.map((produ
+ }));
+ 
+ export const SUPPORTED_HID_FILTERS: HIDDeviceFilter[] = [
++  { vendorId: VENDOR_ID.redgear, productId: 0xb412, usagePage: 0xff00, usage: 1 },
+   ...VAXEE_HID_FILTERS,
+   ...ASUS_HID_FILTERS,
+   ...DAREU_HID_FILTERS,
+diff --git a/src/index.ts b/src/index.ts
+index 869b64c..a130f34 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -38,4 +38,5 @@ export * as motospeed from "./motospeed/index.js";
+ export * as rapoo from "./rapoo/index.js";
+ export * as fater from "./fater/index.js";
+ export * as coolermaster from "./coolermaster/index.js";
++export * as redgear from "./redgear/index.js";
+ export * as ajazz from "./ajazz/index.js";
+diff --git a/src/redgear/index.ts b/src/redgear/index.ts
+new file mode 100644
+index 0000000..4dfc2af
+--- /dev/null
++++ b/src/redgear/index.ts
+@@ -0,0 +1,38 @@
++/**
++ * X13 Pro identity and raw status framing. Evidence: docs/redgear-x13-pro-testing.md.
++ * No settings encoders or speculative field interpretations are provided.
++ */
++export const REDGEAR_X13_VENDOR_ID = 0x1b80;
++export const REDGEAR_X13_PRODUCT_ID = 0xb412;
++export const REDGEAR_X13_USAGE_PAGE = 0xff00;
++export const REDGEAR_X13_USAGE = 1;
++export const REDGEAR_X13_STATUS_REPORT_ID = 3;
++export const REDGEAR_X13_STATUS_BYTES = 40;
++
++export const REDGEAR_X13_SUPPORT = {
++  name: "Redgear X13 Pro",
++  verified: false,
++  nativeStatusReadTested: true,
++  bridgeStatusReadTested: true,
++  settingsReady: false,
++} as const;
++
++/** Accept a complete native Windows feature buffer, including its report ID. */
++export function redgearDecodeRawStatus(report: Uint8Array): { payload: Uint8Array } {
++  if (report.length !== REDGEAR_X13_STATUS_BYTES) {
++    throw new RangeError(`X13 Pro status must be ${REDGEAR_X13_STATUS_BYTES} bytes including its report ID`);
++  }
++  if (report[0] !== REDGEAR_X13_STATUS_REPORT_ID) {
++    throw new Error("Unexpected X13 Pro status report ID");
++  }
++  // Ownership is separate from the input buffer; all settings fields remain opaque.
++  return { payload: report.slice(1) };
++}
++
++/** WebHID/Bridge return feature data without the separately requested report ID. */
++export function redgearDecodeStatusPayload(payload: Uint8Array): { payload: Uint8Array } {
++  if (payload.length !== REDGEAR_X13_STATUS_BYTES - 1) {
++    throw new RangeError("X13 Pro status payload must be 39 bytes without its report ID");
++  }
++  return { payload: payload.slice() };
++}
+diff --git a/tsconfig.json b/tsconfig.json
+index 41a1a8b..2379770 100644
+--- a/tsconfig.json
++++ b/tsconfig.json
+@@ -19,6 +19,7 @@
+     "noFallthroughCasesInSwitch": true,
+     "skipLibCheck": true,
+     "paths": {
++      "@openmouse/protocol/redgear": ["./src/redgear/index.ts"],
+       "@openmouse/protocol": ["./src/index.ts"],
+       "@openmouse/protocol/atk": ["./src/atk/index.ts"],
+       "@openmouse/protocol/endgame-gear-we": ["./src/endgame-gear/wireless.ts"],

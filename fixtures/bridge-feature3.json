@@ -1,0 +1,29 @@
+{
+  "transport": "OpenMouse Bridge v1.0.0-beta.15",
+  "date": "2026-10-16",
+  "vid": "1B80",
+  "pid": "B412",
+  "reportId": 3,
+  "includesReportId": false,
+  "samples": [
+    {
+      "sample": 1,
+      "payloadBytes": 39,
+      "payloadHex": "05033100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "sha256": "5bd79c175e9e04c886ecf24b8c43cb3004948c3238bd511825878531d64dd92c"
+    },
+    {
+      "sample": 2,
+      "payloadBytes": 39,
+      "payloadHex": "05033100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "sha256": "5bd79c175e9e04c886ecf24b8c43cb3004948c3238bd511825878531d64dd92c"
+    },
+    {
+      "sample": 3,
+      "payloadBytes": 39,
+      "payloadHex": "05033100ff00000102030405060700ff000000ff000000ffffff0000ffffff00ffffffff000000",
+      "sha256": "5bd79c175e9e04c886ecf24b8c43cb3004948c3238bd511825878531d64dd92c"
+    }
+  ],
+  "identical": true
+}
